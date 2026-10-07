@@ -1,5 +1,7 @@
 # AI-Powered Transparent Test Automation Platform (PoC — Phase 1: Basic Version)
 
+![CI Pipeline](https://github.com/lakshmidara03/POC_AUTOMATION_PIPELINE/actions/workflows/ci.yml/badge.svg)
+
 This is Phase 1 (M1) of the AI-Powered Transparent Test Automation Platform. This phase establishes the monorepo structure, containing a shared packages library, a Next.js frontend, a NestJS backend, and a Playwright template scaffold.
 
 ## Workspaces
