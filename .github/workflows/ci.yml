@@ -21,7 +21,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'        # LTS; matches your @types/node ^20 constraint
+          node-version: '20'
           cache: 'npm'
 
       # ── 3. Root workspace install (api + web + shared) ────────────────────
@@ -40,16 +40,12 @@ jobs:
       - name: Build Next.js frontend
         run: npm run build --workspace=apps/web
         env:
-          # Prevent Next.js from failing the build for ESLint warnings
           NEXT_TELEMETRY_DISABLED: 1
-          # Dummy API URL so the Next.js build doesn't error on missing env
           NEXT_PUBLIC_API_URL: http://localhost:3000
 
-      # ── 7. Lint NestJS API (no test framework configured) ─────────────────
+      # ── 7. Lint NestJS API ────────────────────────────────────────────────
       - name: Lint NestJS API
         run: npm run lint --workspace=apps/api
-        # Lint is best-effort — don't fail the build on style warnings
-        continue-on-error: true
 
       # ── 8. Playwright setup ───────────────────────────────────────────────
       - name: Install Playwright dependencies
@@ -60,21 +56,16 @@ jobs:
         working-directory: playwright-template
         run: npx playwright install --with-deps chromium
 
-      # ── 9. Run Playwright tests ───────────────────────────────────────────
-      #    Tests run headlessly (CI default). One generated spec is used as
-      #    a smoke test to verify the template scaffold works.
+      # ── 9. Run Playwright tests (strict — failures will fail the job) ─────
       - name: Run Playwright smoke tests
         working-directory: playwright-template
         run: npx playwright test --reporter=html
-        # Playwright tests hit live sites which can be flaky in CI;
-        # treat as non-blocking for now and rely on the report artifact
-        continue-on-error: true
         env:
           CI: true
 
       # ── 10. Upload Playwright HTML report ─────────────────────────────────
       - name: Upload Playwright report
-        if: always()   # upload even if tests fail
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
