@@ -1,0 +1,22 @@
+import { test, expect } from '@playwright/test';
+test('Login to Secure Area', async ({ page }) => {
+  console.log('[STEP_START] Open Browser');
+  await page.goto('https://the-internet.herokuapp.com/login');
+  console.log('[STEP_DONE] Open Browser');
+  console.log('[STEP_START] Navigate to Login Page');
+  await page.waitForLoadState('networkidle');
+  console.log('[STEP_DONE] Navigate to Login Page');
+  console.log('[STEP_START] Enter Username');
+  await page.locator('input[id="username"]').fill('tomsmith');
+  console.log('[STEP_DONE] Enter Username');
+  console.log('[STEP_START] Enter Password');
+  await page.locator('input[id="password"]').fill('SuperSecretPassword!');
+  console.log('[STEP_DONE] Enter Password');
+  console.log('[STEP_START] Click Login');
+  await page.locator('button[type="submit"]').click();
+  await page.waitForLoadState('networkidle');
+  console.log('[STEP_DONE] Click Login');
+  console.log('[STEP_START] Verify Dashboard is Visible');
+  await expect(page.locator('h2')).toHaveText('Secure Area');
+  console.log('[STEP_DONE] Verify Dashboard is Visible');
+});
